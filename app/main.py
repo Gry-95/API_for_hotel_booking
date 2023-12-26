@@ -51,12 +51,6 @@ app.include_router(router_prometheus)
 app.include_router(router_import)
 
 
-# Подключение CORS, чтобы запросы к API могли приходить из браузера 
-origins = [
-    # 3000 - порт, на котором работает фронтенд на React.js 
-    "http://localhost:3000",
-]
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -79,7 +73,6 @@ app.include_router(router_pages)
 if settings.MODE == "TEST":
     # При тестировании через pytest, необходимо подключать Redis, чтобы кэширование работало.
     # Иначе декоратор @cache из библиотеки fastapi-cache ломает выполнение кэшируемых эндпоинтов.
-    # Из этого следует вывод, что сторонние решения порой ломают наш код, и это бывает проблематично поправить.
     redis = aioredis.from_url(f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}", encoding="utf8", decode_responses=True)
     FastAPICache.init(RedisBackend(redis), prefix="cache")
 
